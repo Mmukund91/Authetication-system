@@ -1,63 +1,92 @@
 {% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
 
-{% block title %}LoGIn{% endblock %}
+<div class="container mt-5 mb-2">
+    <h3 class="text-center">Login</h3>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+          
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              placeholder="Enter email"
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              name="password"
+              placeholder="Enter password"
+            />
+          </div>
+          <br />
+          <button type="submit" class="btn btn-primary">Login</button>
+        </form>
 
 
-{% block body %}
 
 
-<div class="container">
-	<div class="d-flex justify-content-center h-100">
-		<div class="card">
-			<div class="card-header">
-				<h3>Sign In</h3>
-				<div class="d-flex justify-content-end social_icon">
-					<span><i class="fab fa-facebook-square"></i></span>
-					<span><i class="fab fa-google-plus-square"></i></span>
-					<span><i class="fab fa-twitter-square"></i></span>
-				</div>
-			</div>
-			<div class="card-body">
-				<form>
-					<div class="input-group form-group">
-						<div class="input-group-prepend">
-							<span class="input-group-text"><i class="fas fa-user"></i></span>
-						</div>
-						<input type="text" class="form-control" placeholder="username">
-						
-					</div>
-					<div class="input-group form-group">
-						<div class="input-group-prepend">
-							<span class="input-group-text"><i class="fas fa-key"></i></span>
-						</div>
-						<input type="password" class="form-control" placeholder="password">
-					</div>
-					<div class="row align-items-center remember">
-						<input type="checkbox">Remember Me
-					</div>
-					<div class="form-group">
-						<input type="submit" value="Login" class="btn float-right login_btn">
-					</div>
-				</form>
-			</div>
-			<div class="card-footer">
-				<div class="d-flex justify-content-center links">
-					Don't have an account?<a href="#">Sign Up</a>
-				</div>
-				<div class="d-flex justify-content-center">
-					<a href="#">Forgot your password?</a>
-				</div>
-			</div>
-		</div>
-	</div>
+
+</div>
+
+<div class="container text-center mb-2">
+    <hr>
+   <p>OR LOGIN WITH</p>
+   <hr>
+</div>
+
+<div class="container ">
+    
+    <div class="row kpx_row-sm-offset-3 kpx_socialButtons">
+        <div class="col-xs-4 col-sm-4">
+            <a href="{{url_for('auth.facebook_login')}}" class="btn btn-lg btn-block kpx_btn-facebook" data-toggle="tooltip" data-placement="top" title="Facebook">
+                <i class="fa fa-facebook fa-2x"></i>
+                <span class="hidden-xs"></span>
+              </a>
+        </div>
+        <div class="col-xs-4 col-sm-4">
+            <a href="{{url_for('auth.github_login')}}" class="btn btn-lg btn-block kpx_btn-github" data-toggle="tooltip" data-placement="top" title="GitHub">
+              <i class="fa fa-github fa-2x"></i>
+              <span class="hidden-xs"></span>
+            </a>
+          </div>
+          <div class="col-xs-4 col-sm-4">
+            <a href="{{url_for('auth.google_login')}}" class="btn btn-lg btn-block kpx_btn-google-plus" data-toggle="tooltip" data-placement="top" title="Google">
+              <i class="fa fa-google fa-2x"></i>
+              <span class="hidden-xs"></span>
+            </a>
+          </div> 
+          </div>
+          
+
+   
 </div>
 
 
+
+
+
+
+
+
+
 {% endblock %}
-
-
-
-
 
 
 

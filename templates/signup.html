@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Signup{% endblock %}
+{% block content %}
+<div class="container mt-5 mb-2">
+    <form method="POST">
+        <h3 align="center">Sign Up</h3>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }} Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+
+
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            name="email"
+            placeholder="Enter email"
+          />
+        </div>
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="firstName"
+            name="firstName"
+            placeholder="Enter first name"
+          />
+        </div>
+        <div class="form-group">
+          <label for="password1">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password1"
+            name="password1"
+            placeholder="Enter password"
+          />
+        </div>
+        <div class="form-group">
+          <label for="password2">Password (Confirm)</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password2"
+            name="password2"
+            placeholder="Confirm password"
+          />
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      
+</div>
+
+<div class="container text-center mb-2">
+  <hr>
+ <p>OR LOGIN WITH</p>
+ <hr>
+</div>
+
+<div class="container ">
+  
+  <div class="row kpx_row-sm-offset-3 kpx_socialButtons">
+      <div class="col-xs-4 col-sm-4">
+          <a href="#" class="btn btn-lg btn-block kpx_btn-facebook" data-toggle="tooltip" data-placement="top" title="Facebook">
+              <i class="fa fa-facebook fa-2x"></i>
+              <span class="hidden-xs"></span>
+            </a>
+      </div>
+      <div class="col-xs-4 col-sm-4">
+          <a href="{{url_for('auth.github_login')}}" class="btn btn-lg btn-block kpx_btn-github" data-toggle="tooltip" data-placement="top" title="GitHub">
+            <i class="fa fa-github fa-2x"></i>
+            <span class="hidden-xs"></span>
+          </a>
+        </div>
+        <div class="col-xs-4 col-sm-4">
+          <a href="{{url_for('auth.google_login')}}" class="btn btn-lg btn-block kpx_btn-google-plus" data-toggle="tooltip" data-placement="top" title="Google">
+            <i class="fa fa-google fa-2x"></i>
+            <span class="hidden-xs"></span>
+          </a>
+        </div> 
+        </div>
+        
+
+ 
+</div>
+
+{% endblock %}
