@@ -8,7 +8,10 @@ from . import oauth
 
 
 
+
+
 auth = Blueprint('auth', __name__)
+
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -51,10 +54,17 @@ def signup():
         elif len(password1) < 7:
             flash('Password must be at least 7 characters.', category='error')
         else:
+           
+            
             new_user = User(email=email, firstname=firstname, password=generate_password_hash(
-                password1, method='sha256'))
+            password1, method='sha256'))
+            
+            
+
             db.session.add(new_user)
+            
             db.session.commit()
+            
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
             return redirect(url_for('auth.login'))

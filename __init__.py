@@ -3,12 +3,18 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from os import access, path
 from authlib.integrations.flask_client import OAuth
-
-
+import firebase_admin
+import json
+import pyrebase
+from firebase_admin import credentials , auth
 
 db = SQLAlchemy()
 oauth = OAuth()
 DBNAME = "database.db"
+
+
+
+
 
 
 
