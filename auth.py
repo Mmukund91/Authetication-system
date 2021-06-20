@@ -1,10 +1,46 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, app, render_template, request, flash, redirect, url_for , make_response
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
 from authlib.integrations.flask_client import OAuth
 from . import oauth
+import jsonify
+import jwt
+from functools import wraps
+import datetime
+import uuid
+from . import create_app
+import pyrebase
+from .__init__ import DBNAME 
+import logging
+
+
+ 
+#logging.basicConfig(filename = 'auth.log', level=logging.ERROR, format = '%(message)s%')
+
+
+
+
+
+
+
+
+config = {
+    "apiKey": "AIzaSyDh32Jqlnf_9iTFBpa7F_Qj-pYR2J8sR1A",
+    "authDomain": "fireebasetest-1597a.firebaseapp.com",
+    "databaseURL": f'sqlite:///{DBNAME}',
+    "projectId": "fireebasetest-1597a",
+    "storageBucket": "fireebasetest-1597a.appspot.com",
+    "messagingSenderId": "865107738885",
+    "appId": "1:865107738885:web:00350e25301a1e9377376c",
+    "measurementId": "G-9KYNZDZDGP"
+}
+
+firebase = pyrebase.initialize_app(config)
+
+a = firebase.auth()
+
 
 
 
@@ -36,6 +72,7 @@ def login():
 
 @auth.route('/signup', methods=['GET', 'POST'])
 def signup():
+    
     if request.method == 'POST':
         email = request.form.get('email')
         firstname = request.form.get('firstName')
@@ -57,13 +94,25 @@ def signup():
            
             
             new_user = User(email=email, firstname=firstname, password=generate_password_hash(
-            password1, method='sha256'))
+            password1, method='sha256'),public_id=str(uuid.uuid4()))
             
             
 
             db.session.add(new_user)
             
             db.session.commit()
+
+            token = jwt.encode({'public_id' : new_user.public_id , 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, 'thisisit')
+            token = str(token)
+            print(token)
+
+            
+            return jsonify({'token' : token.decode()})
+            
+
+                      
+            a.send_email_verification(new_user['token'])
+            
             
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
