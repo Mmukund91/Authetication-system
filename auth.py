@@ -1,4 +1,5 @@
 from flask import Blueprint, app, render_template, request, flash, redirect, url_for , make_response
+from flask_mail import Message
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
@@ -14,6 +15,10 @@ from . import create_app
 import pyrebase
 from .__init__ import DBNAME 
 import logging
+from . import mail
+import random
+
+
 
 
  
@@ -40,6 +45,7 @@ config = {
 firebase = pyrebase.initialize_app(config)
 
 a = firebase.auth()
+
 
 
 
@@ -91,10 +97,11 @@ def signup():
         elif len(password1) < 7:
             flash('Password must be at least 7 characters.', category='error')
         else:
-           
-            
+            otp=random.randrange(100000,999999)
+            print(otp)
+            temp = str(otp)
             new_user = User(email=email, firstname=firstname, password=generate_password_hash(
-            password1, method='sha256'),public_id=str(uuid.uuid4()))
+            password1, method='sha256'),temp=generate_password_hash(temp,method='sha256'))
             
             
 
@@ -102,21 +109,33 @@ def signup():
             
             db.session.commit()
 
-            token = jwt.encode({'public_id' : new_user.public_id , 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, 'thisisit')
-            token = str(token)
-            print(token)
+
+
+        
+            
+
+            msg = Message('EMAIL_VERIFICATION', recipients=[new_user.email])
+            print(new_user.email)
+            temp = str(new_user.temp)
+            msg.body = str(otp)
+
+            mail.send(msg)
+            
+            return redirect(url_for('auth.verification'))
+            
 
             
-            return jsonify({'token' : token.decode()})
+            
+            
             
 
                       
-            a.send_email_verification(new_user['token'])
             
             
-            login_user(new_user, remember=True)
-            flash('Account created!', category='success')
-            return redirect(url_for('auth.login'))
+            
+            #login_user(new_user, remember=True)
+            #flash('Account created!', category='success')
+            #return redirect(url_for('auth.login'))
 
     return render_template("signup.html", user=current_user)
 
@@ -163,4 +182,31 @@ def facebook_authorize():
     resp = facebook.get('user').json()
     print(f"\n{resp}\n")
     return redirect(url_for('main.profile'))
+
+
+@auth.route('/verify',methods=['GET','POST'])
+def verification():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        OTP = request.form.get('OTP')
+        
+
+        user = User.query.filter_by(email=email).first()
+        print(user.temp)
+        if user:
+            if check_password_hash(user.temp,OTP):
+                flash('Account Verified!', category='success')
+                user.verified = True
+                login_user(user, remember=True)
+                flash('Account created!', category='success')
+                return redirect(url_for('auth.login'))
+            else:
+                flash('Incorrect OTP, try again.', category='error')
+        else:
+            flash('Email does not exist.', category='error')
+
+    return render_template("verify.html")
+
+
+
      

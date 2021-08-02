@@ -9,10 +9,12 @@ import pyrebase
 from firebase_admin import credentials , auth
 import jwt
 import datetime
+from flask_mail import Mail
 
 db = SQLAlchemy()
 oauth = OAuth()
 DBNAME = "database.db"
+mail = Mail()
 
 
 
@@ -30,6 +32,21 @@ def create_app():
     app.config['GITHUB_CLIENT_SECRET'] = "ca0aa914048f030e8412ae75c02301fa464f271f"
     app.config['FACEBOOK_CLIENT_ID']= "495664508348182"
     app.config['FACEBOOK_CLIENT_SECRET'] = "2e31a33974154907d5de51c7de2684"
+    app.config['DEBUG'] =True
+    app.config['TESTING'] =False
+    app.config['MAIL_SERVER'] ='smtp.gmail.com'
+    app.config['MAIL_PORT'] = 465
+    app.config['MAIL_USE_TLS'] = False
+    app.config['MAIL_USE_SSL'] = True
+    app.config['MAIL_DEBUG'] = True
+    app.config['MAIL_USERNAME'] = 'corrode6789@gmail.com'
+    app.config['MAIL_PASSWORD'] = '098765TYUIOP'
+    app.config['MAIL_DEFAULT_SENDER'] = 'corrode6789@gmail.com'
+    app.config['MAIL_MAX_EMAILS'] =None
+    app.config['MAIL_SUPPRESS_SEND'] =False
+    app.config['MAIL_ASCII_ATTACHMENTS'] =False
+
+    mail.init_app(app)
     db.init_app(app)
     oauth.init_app(app)
 
